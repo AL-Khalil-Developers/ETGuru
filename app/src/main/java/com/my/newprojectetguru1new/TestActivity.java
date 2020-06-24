@@ -17,6 +17,8 @@ import android.webkit.WebView;
 
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.AdListener;
+import com.unity3d.ads.UnityAds;
+
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.net.Uri;
@@ -31,15 +33,21 @@ public class TestActivity extends AppCompatActivity {
 	private Toolbar _toolbar;
 	
 	private WebView webview1;
+	private ViewGroup bannerAdContainer;
 	
 	private InterstitialAd ads;
-	private AdListener _ads_ad_listener;
 	private AlertDialog.Builder d;
 	private Intent back = new Intent();
 	@Override
 	protected void onCreate(Bundle _savedInstanceState) {
 		super.onCreate(_savedInstanceState);
+		UnityAds.initialize(TestActivity.this,UnityAdsConfig.UnityAdsAppID,UnityAdsConfig.TestModeON);
 		setContentView(R.layout.test);
+
+		bannerAdContainer  = (LinearLayout) findViewById(R.id.bannerAdContainer);
+		UnityAdsConfig.loadUnityInterstitialAd();
+		UnityAdsConfig.loadAndShowUnityBannerAds(TestActivity.this,bannerAdContainer);
+
 		initialize(_savedInstanceState);
 		if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED
 		|| ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
@@ -89,29 +97,7 @@ public class TestActivity extends AppCompatActivity {
 				super.onPageFinished(_param1, _param2);
 			}
 		});
-		
-		_ads_ad_listener = new AdListener() {
-			@Override
-			public void onAdLoaded() {
-				
-			}
-			
-			@Override
-			public void onAdFailedToLoad(int _param1) {
-				final int _errorCode = _param1;
-				
-			}
-			
-			@Override
-			public void onAdOpened() {
-				
-			}
-			
-			@Override
-			public void onAdClosed() {
-				
-			}
-		};
+
 	}
 	private void initializeLogic() {
 		setTitle("Syllabus");
@@ -213,5 +199,25 @@ public class TestActivity extends AppCompatActivity {
 	public int getDisplayHeightPixels(){
 		return getResources().getDisplayMetrics().heightPixels;
 	}
-	
+
+	@Override
+	protected void onStart() {
+		UnityAdsConfig.destroyUnityBannerAd();
+		UnityAdsConfig.showUnityBannerAd(TestActivity.this,bannerAdContainer);
+		UnityAdsConfig.showUnityInterstitialAd(TestActivity.this);
+		super.onStart();
+	}
+
+
+	@Override
+	protected void onResume() {
+		UnityAdsConfig.showUnityBannerAd(TestActivity.this,bannerAdContainer);
+		super.onResume();
+	}
+
+	@Override
+	protected void onDestroy() {
+		UnityAdsConfig.destroyUnityBannerAd();
+		super.onDestroy();
+	}
 }

@@ -19,6 +19,8 @@ import android.webkit.WebView;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.AdListener;
+import com.unity3d.ads.UnityAds;
+
 import androidx.core.content.ContextCompat;
 import androidx.core.app.ActivityCompat;
 import android.Manifest;
@@ -30,13 +32,19 @@ public class ShortnoteActivity extends AppCompatActivity {
 	private Toolbar _toolbar;
 	
 	private WebView webview1;
-	
-	private InterstitialAd ia;
-	private AdListener _ia_ad_listener;
+
+
+	private ViewGroup bannerAdContainer;
 	@Override
 	protected void onCreate(Bundle _savedInstanceState) {
 		super.onCreate(_savedInstanceState);
+		UnityAds.initialize(ShortnoteActivity.this,UnityAdsConfig.UnityAdsAppID,UnityAdsConfig.TestModeON);
 		setContentView(R.layout.shortnote);
+
+		bannerAdContainer  = (LinearLayout) findViewById(R.id.bannerAdContainer);
+		UnityAdsConfig.loadUnityInterstitialAd();
+		UnityAdsConfig.loadAndShowUnityBannerAds(ShortnoteActivity.this,bannerAdContainer);
+
 		initialize(_savedInstanceState);
 		if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED
 		|| ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
@@ -85,30 +93,7 @@ public class ShortnoteActivity extends AppCompatActivity {
 				super.onPageFinished(_param1, _param2);
 			}
 		});
-		
-		_ia_ad_listener = new AdListener() {
-			@Override
-			public void onAdLoaded() {
-				ia.show();
-				ia.loadAd(new AdRequest.Builder().build());
-			}
-			
-			@Override
-			public void onAdFailedToLoad(int _param1) {
-				final int _errorCode = _param1;
-				
-			}
-			
-			@Override
-			public void onAdOpened() {
-				
-			}
-			
-			@Override
-			public void onAdClosed() {
-				
-			}
-		};
+
 	}
 	private void initializeLogic() {
 		setTitle("Short Notes");
@@ -210,5 +195,25 @@ public class ShortnoteActivity extends AppCompatActivity {
 	public int getDisplayHeightPixels(){
 		return getResources().getDisplayMetrics().heightPixels;
 	}
-	
+
+	@Override
+	protected void onDestroy() {
+		UnityAdsConfig.destroyUnityBannerAd();
+		super.onDestroy();
+	}
+
+	@Override
+	protected void onStart() {
+		UnityAdsConfig.showUnityBannerAd(ShortnoteActivity.this,bannerAdContainer);
+		UnityAdsConfig.showUnityInterstitialAd(ShortnoteActivity.this);
+		super.onStart();
+	}
+
+
+	@Override
+	protected void onResume() {
+		UnityAdsConfig.destroyUnityBannerAd();
+		UnityAdsConfig.showUnityBannerAd(ShortnoteActivity.this,bannerAdContainer);
+		super.onResume();
+	}
 }

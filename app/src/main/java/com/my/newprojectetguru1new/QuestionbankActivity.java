@@ -18,6 +18,8 @@ import android.webkit.WebView;
 
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.AdListener;
+import com.unity3d.ads.UnityAds;
+
 import androidx.core.content.ContextCompat;
 import androidx.core.app.ActivityCompat;
 import android.Manifest;
@@ -29,13 +31,17 @@ public class QuestionbankActivity extends AppCompatActivity {
 	private Toolbar _toolbar;
 	
 	private WebView webview1;
-	
-	private InterstitialAd ads;
-	private AdListener _ads_ad_listener;
+	private ViewGroup bannerAdContainer;
+
 	@Override
 	protected void onCreate(Bundle _savedInstanceState) {
 		super.onCreate(_savedInstanceState);
+		UnityAds.initialize(QuestionbankActivity.this,UnityAdsConfig.UnityAdsAppID,UnityAdsConfig.TestModeON);
 		setContentView(R.layout.questionbank);
+
+		bannerAdContainer  = (LinearLayout) findViewById(R.id.bannerAdContainer);
+		UnityAdsConfig.loadUnityInterstitialAd();
+		UnityAdsConfig.loadAndShowUnityBannerAds(QuestionbankActivity.this,bannerAdContainer);
 		initialize(_savedInstanceState);
 		if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED
 		|| ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
@@ -85,28 +91,7 @@ public class QuestionbankActivity extends AppCompatActivity {
 			}
 		});
 		
-		_ads_ad_listener = new AdListener() {
-			@Override
-			public void onAdLoaded() {
-				
-			}
-			
-			@Override
-			public void onAdFailedToLoad(int _param1) {
-				final int _errorCode = _param1;
-				
-			}
-			
-			@Override
-			public void onAdOpened() {
-				
-			}
-			
-			@Override
-			public void onAdClosed() {
-				
-			}
-		};
+
 	}
 	private void initializeLogic() {
 		setTitle("Question Bank");
@@ -207,5 +192,25 @@ public class QuestionbankActivity extends AppCompatActivity {
 	public int getDisplayHeightPixels(){
 		return getResources().getDisplayMetrics().heightPixels;
 	}
-	
+
+	@Override
+	protected void onStart() {
+		UnityAdsConfig.destroyUnityBannerAd();
+		UnityAdsConfig.showUnityBannerAd(QuestionbankActivity.this,bannerAdContainer);
+		UnityAdsConfig.showUnityInterstitialAd(QuestionbankActivity.this);
+		super.onStart();
+	}
+
+
+	@Override
+	protected void onResume() {
+		UnityAdsConfig.showUnityBannerAd(QuestionbankActivity.this,bannerAdContainer);
+		super.onResume();
+	}
+
+	@Override
+	protected void onDestroy() {
+		UnityAdsConfig.destroyUnityBannerAd();
+		super.onDestroy();
+	}
 }

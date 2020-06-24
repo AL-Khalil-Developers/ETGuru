@@ -1,6 +1,7 @@
 package com.my.newprojectetguru1new;
 
 import android.os.*;
+import android.view.ViewGroup;
 import android.widget.*;
 import android.util.*;
 
@@ -20,6 +21,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 import android.app.AlertDialog;
 import android.view.View;
+
+import com.unity3d.ads.UnityAds;
 
 public class MainActivity extends AppCompatActivity {
 	
@@ -73,12 +76,32 @@ public class MainActivity extends AppCompatActivity {
 	private Intent back = new Intent();
 	private AlertDialog.Builder dialog;
 	private Intent sms = new Intent();
+	private ViewGroup UnityBannerAdContainer;
 	@Override
 	protected void onCreate(Bundle _savedInstanceState) {
 		super.onCreate(_savedInstanceState);
+		UnityAds.initialize(MainActivity.this,UnityAdsConfig.UnityAdsAppID,UnityAdsConfig.TestModeON);
 		setContentView(R.layout.main);
 		initialize(_savedInstanceState);
 		initializeLogic();
+
+		UnityBannerAdContainer = (LinearLayout) findViewById(R.id.bannerAdContainer);
+		UnityAdsConfig.destroyUnityBannerAd();
+		UnityAdsConfig.loadAndShowUnityBannerAds(MainActivity.this,UnityBannerAdContainer);
+		UnityAdsConfig.loadUnityInterstitialAd();
+		Handler handler = new Handler();
+		handler.postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				if (UnityAds.isInitialized()){
+					UnityAdsConfig.showUnityBannerAd(MainActivity.this,UnityBannerAdContainer);
+				}else {
+					UnityAds.initialize(MainActivity.this,UnityAdsConfig.UnityAdsAppID,UnityAdsConfig.TestModeON);
+					UnityAdsConfig.showUnityBannerAd(MainActivity.this,UnityBannerAdContainer);
+				}
+
+			}
+		},2000);
 	}
 	
 	private void initialize(Bundle _savedInstanceState) {
@@ -254,6 +277,7 @@ public class MainActivity extends AppCompatActivity {
 		});
 	}
 	private void initializeLogic() {
+		UnityAdsConfig.showUnityInterstitialAd(MainActivity.this);
 		i.setClass(getApplicationContext(), SplashActivity.class);
 		startActivity(i);
 	}
@@ -333,5 +357,18 @@ public class MainActivity extends AppCompatActivity {
 	public int getDisplayHeightPixels(){
 		return getResources().getDisplayMetrics().heightPixels;
 	}
-	
+
+
+	@Override
+	protected void onDestroy() {
+		UnityAdsConfig.destroyUnityBannerAd();
+		super.onDestroy();
+	}
+
+
+	@Override
+	protected void onResume() {
+		UnityAdsConfig.showUnityBannerAd(MainActivity.this,UnityBannerAdContainer);
+		super.onResume();
+	}
 }

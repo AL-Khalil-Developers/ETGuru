@@ -14,6 +14,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import android.webkit.WebView;
 
+import com.unity3d.ads.UnityAds;
+
 public class StartActivity extends AppCompatActivity {
 	
 	
@@ -23,6 +25,7 @@ public class StartActivity extends AppCompatActivity {
 	@Override
 	protected void onCreate(Bundle _savedInstanceState) {
 		super.onCreate(_savedInstanceState);
+		UnityAds.initialize(this,UnityAdsConfig.UnityAdsAppID,UnityAdsConfig.TestModeON);
 		setContentView(R.layout.start);
 		initialize(_savedInstanceState);
 		initializeLogic();

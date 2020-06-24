@@ -21,17 +21,26 @@ import androidx.core.app.ActivityCompat;
 import android.Manifest;
 import android.content.pm.PackageManager;
 
+import com.unity3d.ads.UnityAds;
+
 public class PapersActivity extends AppCompatActivity {
 	
 	
 	private Toolbar _toolbar;
 	
 	private WebView webview1;
+	private ViewGroup bannerAdContainer;
 	@Override
 	protected void onCreate(Bundle _savedInstanceState) {
 		super.onCreate(_savedInstanceState);
+		UnityAds.initialize(PapersActivity.this,UnityAdsConfig.UnityAdsAppID,UnityAdsConfig.TestModeON);
 		setContentView(R.layout.papers);
 		initialize(_savedInstanceState);
+
+		bannerAdContainer  = (LinearLayout) findViewById(R.id.bannerAdContainer);
+		UnityAdsConfig.loadUnityInterstitialAd();
+		UnityAdsConfig.loadAndShowUnityBannerAds(PapersActivity.this,bannerAdContainer);
+
 		if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED
 		|| ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
 			ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1000);
@@ -180,5 +189,26 @@ public class PapersActivity extends AppCompatActivity {
 	public int getDisplayHeightPixels(){
 		return getResources().getDisplayMetrics().heightPixels;
 	}
-	
+
+
+	@Override
+	protected void onStart() {
+		UnityAdsConfig.destroyUnityBannerAd();
+		UnityAdsConfig.showUnityBannerAd(PapersActivity.this,bannerAdContainer);
+		UnityAdsConfig.showUnityInterstitialAd(PapersActivity.this);
+		super.onStart();
+	}
+
+
+	@Override
+	protected void onResume() {
+		UnityAdsConfig.showUnityBannerAd(PapersActivity.this,bannerAdContainer);
+		super.onResume();
+	}
+
+	@Override
+	protected void onDestroy() {
+		UnityAdsConfig.destroyUnityBannerAd();
+		super.onDestroy();
+	}
 }

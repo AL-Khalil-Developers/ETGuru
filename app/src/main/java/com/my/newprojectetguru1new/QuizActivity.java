@@ -16,6 +16,7 @@ import android.webkit.WebView;
 
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.AdListener;
+import com.unity3d.ads.UnityAds;
 
 public class QuizActivity extends AppCompatActivity {
 	
@@ -23,13 +24,17 @@ public class QuizActivity extends AppCompatActivity {
 	private Toolbar _toolbar;
 	
 	private WebView webview1;
-	
-	private InterstitialAd ads;
-	private AdListener _ads_ad_listener;
+
+
+	private ViewGroup UnityBannerAdContainer;
 	@Override
 	protected void onCreate(Bundle _savedInstanceState) {
 		super.onCreate(_savedInstanceState);
+		UnityAds.initialize(QuizActivity.this,UnityAdsConfig.UnityAdsAppID,UnityAdsConfig.TestModeON);
 		setContentView(R.layout.quiz);
+		UnityBannerAdContainer  = (LinearLayout) findViewById(R.id.bannerAdContainer);
+		UnityAdsConfig.loadUnityInterstitialAd();
+		UnityAdsConfig.loadAndShowUnityBannerAds(QuizActivity.this,UnityBannerAdContainer);
 		initialize(_savedInstanceState);
 		initializeLogic();
 	}
@@ -65,29 +70,7 @@ public class QuizActivity extends AppCompatActivity {
 				super.onPageFinished(_param1, _param2);
 			}
 		});
-		
-		_ads_ad_listener = new AdListener() {
-			@Override
-			public void onAdLoaded() {
-				
-			}
-			
-			@Override
-			public void onAdFailedToLoad(int _param1) {
-				final int _errorCode = _param1;
-				
-			}
-			
-			@Override
-			public void onAdOpened() {
-				
-			}
-			
-			@Override
-			public void onAdClosed() {
-				
-			}
-		};
+
 	}
 	private void initializeLogic() {
 		setTitle("Quizzes ");
@@ -156,5 +139,26 @@ public class QuizActivity extends AppCompatActivity {
 	public int getDisplayHeightPixels(){
 		return getResources().getDisplayMetrics().heightPixels;
 	}
-	
+
+
+	@Override
+	protected void onDestroy() {
+		UnityAdsConfig.destroyUnityBannerAd();
+		super.onDestroy();
+	}
+
+	@Override
+	protected void onStart() {
+		UnityAdsConfig.showUnityBannerAd(QuizActivity.this,UnityBannerAdContainer);
+		UnityAdsConfig.showUnityInterstitialAd(QuizActivity.this);
+		super.onStart();
+	}
+
+
+	@Override
+	protected void onResume() {
+		UnityAdsConfig.destroyUnityBannerAd();
+		UnityAdsConfig.showUnityBannerAd(QuizActivity.this,UnityBannerAdContainer);
+		super.onResume();
+	}
 }

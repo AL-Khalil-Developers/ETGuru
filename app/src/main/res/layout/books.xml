@@ -15,14 +15,23 @@
 			android:background="?attr/colorPrimary"
 			app:popupTheme="@style/AppTheme.PopupOverlay"/>
 	</com.google.android.material.appbar.AppBarLayout>
-	<LinearLayout
+	<RelativeLayout
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		android:orientation="vertical"
 		app:layout_behavior="@string/appbar_scrolling_view_behavior">
 		<WebView
 			android:id="@+id/webview1"
+			android:layout_above="@id/bannerAdContainer"
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"/>
-	</LinearLayout>
+		<LinearLayout
+			android:layout_alignParentBottom="true"
+			android:gravity="center"
+			android:background="#000"
+			android:orientation="vertical"
+			android:id="@+id/bannerAdContainer"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"/>
+	</RelativeLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

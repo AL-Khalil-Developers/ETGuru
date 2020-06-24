@@ -14,18 +14,26 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import android.webkit.WebView;
 
+import com.unity3d.ads.UnityAds;
+
 public class OnlineclassActivity extends AppCompatActivity {
 	
 	
 	private Toolbar _toolbar;
 	
 	private WebView webview1;
+	private ViewGroup bannerAdContainer;
 	@Override
 	protected void onCreate(Bundle _savedInstanceState) {
 		super.onCreate(_savedInstanceState);
+		UnityAds.initialize(OnlineclassActivity.this,UnityAdsConfig.UnityAdsAppID,UnityAdsConfig.TestModeON);
 		setContentView(R.layout.onlineclass);
 		initialize(_savedInstanceState);
 		initializeLogic();
+
+		bannerAdContainer  = (LinearLayout) findViewById(R.id.bannerAdContainer);
+		UnityAdsConfig.loadUnityInterstitialAd();
+		UnityAdsConfig.loadAndShowUnityBannerAds(OnlineclassActivity.this,bannerAdContainer);
 	}
 	
 	private void initialize(Bundle _savedInstanceState) {
@@ -127,5 +135,25 @@ public class OnlineclassActivity extends AppCompatActivity {
 	public int getDisplayHeightPixels(){
 		return getResources().getDisplayMetrics().heightPixels;
 	}
-	
+
+	@Override
+	protected void onStart() {
+		UnityAdsConfig.destroyUnityBannerAd();
+		UnityAdsConfig.showUnityBannerAd(OnlineclassActivity.this,bannerAdContainer);
+		UnityAdsConfig.showUnityInterstitialAd(OnlineclassActivity.this);
+		super.onStart();
+	}
+
+
+	@Override
+	protected void onResume() {
+		UnityAdsConfig.showUnityBannerAd(OnlineclassActivity.this,bannerAdContainer);
+		super.onResume();
+	}
+
+	@Override
+	protected void onDestroy() {
+		UnityAdsConfig.destroyUnityBannerAd();
+		super.onDestroy();
+	}
 }

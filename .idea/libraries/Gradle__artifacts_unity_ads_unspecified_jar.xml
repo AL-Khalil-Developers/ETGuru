@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="Gradle: artifacts:unity-ads:unspecified@jar">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/unity-ads/build/.transforms/293b8d9328a115b67dbdce400781ab31/jetified-unity-ads/jars/classes.jar!/" />
+      <root url="file://$PROJECT_DIR$/unity-ads/build/.transforms/293b8d9328a115b67dbdce400781ab31/jetified-unity-ads/res" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

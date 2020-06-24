@@ -13,9 +13,9 @@ import com.unity3d.services.banners.UnityBanners;
 public class UnityAdsConfig {
     //UnityAdsConfigDetails
     public static boolean TestModeON = false;                                  // Enable or Disable UnityAds
-    public static String UnityAdsAppID = "3667861";                           // Unity Game/App ID
-    public static String UnityInterstitialAdPlacement = "InterstitialAdID";       // Unity Interstitial Ad-Placement ID
-    public static String UnityBannerAdPlacement = "BannerAdID";                   // Unity Banner Ad-Placement ID
+    public static String UnityAdsAppID = "3674067";                           // Unity Game/App ID
+    public static String UnityInterstitialAdPlacement = "InterstitialAD";       // Unity Interstitial Ad-Placement ID
+    public static String UnityBannerAdPlacement = "BannerAD";                   // Unity Banner Ad-Placement ID
 
 
 
